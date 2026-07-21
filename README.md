@@ -2,8 +2,6 @@
 
 An instant, lightweight AI-powered grammar and spelling corrector for Linux Wayland desktops (specifically tailored for Hyprland). Select any text in any application, press your configured hotkey, and watch the text get corrected automatically in-place!
 
-Powered by **Google Gemini API** (`gemini-3.1-flash-lite`) for low-latency responses.
-
 ---
 
 ## Features
