@@ -2,7 +2,9 @@
 # AI Grammar & Spelling Fixer for Hyprland / Wayland
 # Uses Google Gemini API to fix text selected in clipboard and paste it in-place.
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve real path in case script is invoked via a symlink
+REAL_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$REAL_SCRIPT")" && pwd)"
 
 # Load environment variables from .env if present
 if [ -f "${SCRIPT_DIR}/.env" ]; then
