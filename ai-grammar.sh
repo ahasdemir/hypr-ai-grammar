@@ -8,6 +8,22 @@
 REAL_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(cd "$(dirname "$REAL_SCRIPT")" && pwd)"
 
+# Determine mode: fix (default) or enhance
+MODE="${1:-fix}"
+MODE_LOWER=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
+
+# Ignore execution if active window is fullscreen
+if command -v hyprctl &>/dev/null; then
+    ACTIVE_WIN=$(hyprctl activewindow -j 2>/dev/null)
+    if [ -n "$ACTIVE_WIN" ]; then
+        FULLSCREEN=$(echo "$ACTIVE_WIN" | jq -r '.fullscreen // 0')
+        FULLSCREEN_CLIENT=$(echo "$ACTIVE_WIN" | jq -r '.fullscreenClient // 0')
+        if [ "$FULLSCREEN" -ne 0 ] || [ "$FULLSCREEN_CLIENT" -ne 0 ]; then
+            exit 0
+        fi
+    fi
+fi
+
 # Load environment variables from .env if present
 if [ -f "${SCRIPT_DIR}/.env" ]; then
     set -a
@@ -25,10 +41,6 @@ if [ -z "$API_KEY" ]; then
     notify-send "AI Corrector Error" "GEMINI_API_KEY is not set in environment or .env file." &
     exit 1
 fi
-
-# Determine mode: fix (default) or enhance
-MODE="${1:-fix}"
-MODE_LOWER=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
 
 case "$MODE_LOWER" in
     enhance|--enhance|-e)
